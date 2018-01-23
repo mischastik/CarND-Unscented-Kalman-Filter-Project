@@ -64,6 +64,13 @@ public:
   ///* Augmented state dimension
   int n_aug_;
 
+  //VectorXd x_aug_;
+
+  VectorXd P_aug_;
+
+  MatrixXd R_radar_;
+
+  MatrixXd R_lidar_;
   ///* Sigma point spreading parameter
   double lambda_;
 
