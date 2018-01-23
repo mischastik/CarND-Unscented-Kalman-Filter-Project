@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{CB00724A-C0B1-4574-B744-4221B8D3EE8A}</ProjectGuid>
-    <RootNamespace>CarNDExtendedKalmanFilterProject</RootNamespace>
+    <RootNamespace>CarNDUnscentedKalmanFilterProject</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
     <ProjectName>CarND-Unscented-Kalman-Filter-Project</ProjectName>
   </PropertyGroup>
