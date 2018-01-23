@@ -66,7 +66,7 @@ public:
 
   //VectorXd x_aug_;
 
-  VectorXd P_aug_;
+  //VectorXd P_aug_;
 
   MatrixXd R_radar_;
 
