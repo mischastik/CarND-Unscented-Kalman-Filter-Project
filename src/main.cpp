@@ -1,4 +1,6 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <uWS/uWS.h>
+#undef _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include "json.hpp"
 #include <math.h>
@@ -38,7 +40,7 @@ int main()
   vector<VectorXd> estimations;
   vector<VectorXd> ground_truth;
 
-  h.onMessage([&ukf,&tools,&estimations,&ground_truth](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
+  h.onMessage([&ukf,&tools,&estimations,&ground_truth](uWS::WebSocket<uWS::SERVER>* ws, char *data, size_t length, uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
     // The 4 signifies a websocket message
     // The 2 signifies a websocket event
@@ -138,13 +140,13 @@ int main()
           msgJson["rmse_vy"] = RMSE(3);
           auto msg = "42[\"estimate_marker\"," + msgJson.dump() + "]";
           // std::cout << msg << std::endl;
-          ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
+          ws->send(msg.data(), msg.length(), uWS::OpCode::TEXT);
 	  
         }
       } else {
         
         std::string msg = "42[\"manual\",{}]";
-        ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
+        ws->send(msg.data(), msg.length(), uWS::OpCode::TEXT);
       }
     }
 
@@ -165,17 +167,18 @@ int main()
     }
   });
 
-  h.onConnection([&h](uWS::WebSocket<uWS::SERVER> ws, uWS::HttpRequest req) {
+  h.onConnection([&h](uWS::WebSocket<uWS::SERVER>* ws, uWS::HttpRequest req) {
     std::cout << "Connected!!!" << std::endl;
   });
 
-  h.onDisconnection([&h](uWS::WebSocket<uWS::SERVER> ws, int code, char *message, size_t length) {
-    ws.close();
+  h.onDisconnection([&h](uWS::WebSocket<uWS::SERVER>* ws, int code, char *message, size_t length) {
+    ws->close();
     std::cout << "Disconnected" << std::endl;
   });
 
   int port = 4567;
-  if (h.listen(port))
+  auto host = "127.0.0.1";
+  if (h.listen(host, port))
   {
     std::cout << "Listening to port " << port << std::endl;
   }

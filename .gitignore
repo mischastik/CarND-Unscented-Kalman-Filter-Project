@@ -3,5 +3,5 @@
 
 # build files
 build/
- .vs/
- ./ide_profiles/products/
+./ide_profiles/VisualStudio/.vs/
+./ide_profiles/products/
