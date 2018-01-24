@@ -186,10 +186,11 @@ int main()
 
 #ifdef VS
   h.onDisconnection([&h](uWS::WebSocket<uWS::SERVER>* ws, int code, char *message, size_t length) {
+	  ws->close();
 #else
   h.onDisconnection([&h](uWS::WebSocket<uWS::SERVER> ws, int code, char *message, size_t length) {
+	  ws.close();
 #endif
-	ws->close();
     std::cout << "Disconnected" << std::endl;
   });
 
