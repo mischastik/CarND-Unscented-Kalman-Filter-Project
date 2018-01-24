@@ -6,13 +6,13 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <iostream>
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 
 class UKF {
 public:
-
   ///* initially set to false, set to true in first call of ProcessMeasurement
   bool is_initialized_;
 
@@ -109,6 +109,17 @@ public:
    * @param meas_package The measurement at k+1
    */
   void UpdateRadar(MeasurementPackage meas_package);
+private:
+	void AugmentedSigmaPoints(MatrixXd* Xsig_out);
+	void SigmaPointPrediction(MatrixXd Xsig_aug, double delta_t);
+	void PredictMeanAndCovariance();
+
+	void PredictRadarMeasurement(VectorXd* z_out, MatrixXd* S_out, MatrixXd* Zsig_out);
+	void UpdateStateRadar(MatrixXd Zsig, MatrixXd S, VectorXd z_pred, VectorXd z, double& epsilon);
+
+	void PredictLidarMeasurement(VectorXd* z_out, MatrixXd* S_out, MatrixXd* Zsig_out);
+	void UpdateStateLidar(MatrixXd Zsig, MatrixXd S, VectorXd z_pred, VectorXd z, double& epsilon);
+
 };
 
 #endif /* UKF_H */
