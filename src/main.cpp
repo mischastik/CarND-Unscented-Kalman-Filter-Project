@@ -41,7 +41,7 @@ int main()
   vector<VectorXd> ground_truth;
 #ifdef VS
   h.onMessage([&ukf,&tools,&estimations,&ground_truth](uWS::WebSocket<uWS::SERVER>* ws, char *data, size_t length, uWS::OpCode opCode) {
-#elif
+#else
   h.onMessage([&ukf, &tools, &estimations, &ground_truth](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
 #endif
 	  // "42" at the start of the message means there's a websocket message event.
@@ -145,7 +145,7 @@ int main()
            std::cout << msg << std::endl;
 #ifdef VS
           ws->send(msg.data(), msg.length(), uWS::OpCode::TEXT);
-#elif	  
+#else	  
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
 #endif
 		}
@@ -154,7 +154,7 @@ int main()
         std::string msg = "42[\"manual\",{}]";
 #ifdef VS
 		ws->send(msg.data(), msg.length(), uWS::OpCode::TEXT);
-#elif
+#else
 		ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
 #endif
 	  }
@@ -178,7 +178,7 @@ int main()
   });
 #ifdef VS
   h.onConnection([&h](uWS::WebSocket<uWS::SERVER>* ws, uWS::HttpRequest req) {
-#elif
+#else
   h.onConnection([&h](uWS::WebSocket<uWS::SERVER> ws, uWS::HttpRequest req) {
 #endif
     std::cout << "Connected!!!" << std::endl;
@@ -186,7 +186,7 @@ int main()
 
 #ifdef VS
   h.onDisconnection([&h](uWS::WebSocket<uWS::SERVER>* ws, int code, char *message, size_t length) {
-#elif
+#else
   h.onDisconnection([&h](uWS::WebSocket<uWS::SERVER> ws, int code, char *message, size_t length) {
 #endif
 	ws->close();
@@ -197,7 +197,7 @@ int main()
 #ifdef VS
   auto host = "127.0.0.1";
   if (h.listen(host, port))
-#elif
+#else
   if (h.listen(port))
 #endif
   {
