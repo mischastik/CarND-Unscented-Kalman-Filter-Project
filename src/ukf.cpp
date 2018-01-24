@@ -279,14 +279,15 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
 		Tc += weights_(i) * x_diff * z_diff.transpose();
 	}
 	//calculate Kalman gain K;
-	MatrixXd K = Tc * S.inverse();
+	MatrixXd S_inv = S.inverse();
+	MatrixXd K = Tc * S_inv;
 	//update state mean and covariance matrix
 	VectorXd z_diff = (meas_package.raw_measurements_ - z_pred);
 	x_ += K * z_diff;
-	P_ -= K * S*K.transpose();
+	P_ -= K * S * K.transpose();
 
 	// TODO: Calculate NIS
-
+	double epsilon = z_diff.transpose() * S_inv * z_diff;
 }
 
 /**
@@ -368,7 +369,8 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
 		Tc += weights_(i) * x_diff * z_diff.transpose();
 	}
 	//calculate Kalman gain K;
-	MatrixXd K = Tc * S.inverse();
+	MatrixXd S_inv = S.inverse();
+	MatrixXd K = Tc * S_inv;
 	//update state mean and covariance matrix
 	VectorXd z_diff = (meas_package.raw_measurements_ - z_pred);
 	//angle normalization
@@ -377,7 +379,8 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
 	while (z_diff(1)<-M_PI)
 		z_diff(1) += 2.*M_PI;
 	x_ += K * z_diff;
-	P_ -= K * S*K.transpose();
+	P_ -= K * S * K.transpose();
 
-	// TODO: Calculate NIS
+	// TODO: Calculate NIS and save NIS
+	double epsilon = z_diff.transpose() * S_inv * z_diff;
 }
