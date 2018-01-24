@@ -39,9 +39,12 @@ int main()
   Tools tools;
   vector<VectorXd> estimations;
   vector<VectorXd> ground_truth;
-
+#ifdef VS
   h.onMessage([&ukf,&tools,&estimations,&ground_truth](uWS::WebSocket<uWS::SERVER>* ws, char *data, size_t length, uWS::OpCode opCode) {
-    // "42" at the start of the message means there's a websocket message event.
+#elif
+  h.onMessage([&ukf, &tools, &estimations, &ground_truth](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
+#endif
+	  // "42" at the start of the message means there's a websocket message event.
     // The 4 signifies a websocket message
     // The 2 signifies a websocket event
 
@@ -139,15 +142,22 @@ int main()
           msgJson["rmse_vx"] = RMSE(2);
           msgJson["rmse_vy"] = RMSE(3);
           auto msg = "42[\"estimate_marker\"," + msgJson.dump() + "]";
-          // std::cout << msg << std::endl;
+           std::cout << msg << std::endl;
+#ifdef VS
           ws->send(msg.data(), msg.length(), uWS::OpCode::TEXT);
-	  
-        }
+#elif	  
+          ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
+#endif
+		}
       } else {
         
         std::string msg = "42[\"manual\",{}]";
-        ws->send(msg.data(), msg.length(), uWS::OpCode::TEXT);
-      }
+#ifdef VS
+		ws->send(msg.data(), msg.length(), uWS::OpCode::TEXT);
+#elif
+		ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
+#endif
+	  }
     }
 
   });
@@ -155,7 +165,7 @@ int main()
   // We don't need this since we're not using HTTP but if it's removed the program
   // doesn't compile :-(
   h.onHttpRequest([](uWS::HttpResponse *res, uWS::HttpRequest req, char *data, size_t, size_t) {
-    const std::string s = "<h1>Hello world!</h1>";
+	const std::string s = "<h1>Hello world!</h1>";
     if (req.getUrl().valueLength == 1)
     {
       res->end(s.data(), s.length());
@@ -166,19 +176,30 @@ int main()
       res->end(nullptr, 0);
     }
   });
-
+#ifdef VS
   h.onConnection([&h](uWS::WebSocket<uWS::SERVER>* ws, uWS::HttpRequest req) {
+#elif
+  h.onConnection([&h](uWS::WebSocket<uWS::SERVER> ws, uWS::HttpRequest req) {
+#endif
     std::cout << "Connected!!!" << std::endl;
   });
 
+#ifdef VS
   h.onDisconnection([&h](uWS::WebSocket<uWS::SERVER>* ws, int code, char *message, size_t length) {
-    ws->close();
+#elif
+  h.onDisconnection([&h](uWS::WebSocket<uWS::SERVER> ws, int code, char *message, size_t length) {
+#endif
+	ws->close();
     std::cout << "Disconnected" << std::endl;
   });
 
   int port = 4567;
+#ifdef VS
   auto host = "127.0.0.1";
   if (h.listen(host, port))
+#elif
+  if (h.listen(port))
+#endif
   {
     std::cout << "Listening to port " << port << std::endl;
   }

@@ -8,3 +8,4 @@ build/
 /ide_profiles/products/msbuild.windows.x64.v141.Debug
 /ide_profiles/VisualStudio/.vs/CarND-Unscented-Kalman-Filter-Project/v15
 /build/
+*.user
