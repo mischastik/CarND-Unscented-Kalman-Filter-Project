@@ -126,6 +126,7 @@ private:
 
 	void PredictRadarMeasurement(VectorXd* z_out, MatrixXd* S_out, MatrixXd* Zsig_out);
 	void UpdateStateRadar(MatrixXd Zsig, MatrixXd S, VectorXd z_pred, VectorXd z, double& epsilon);
+	static double NormalizeAngle(double a);
 };
 
 #endif /* UKF_H */
