@@ -257,7 +257,6 @@ MatrixXd UKF::AugmentedSigmaPoints()
 
 void UKF::SigmaPointPrediction(MatrixXd Xsig_aug, double delta_t)
 {
-
 	//create matrix with predicted sigma points as columns
 	MatrixXd Xsig_pred = MatrixXd(n_x_, 2 * n_aug_ + 1);
 
@@ -295,7 +294,7 @@ void UKF::SigmaPointPrediction(MatrixXd Xsig_aug, double delta_t)
 		py_p = py_p + 0.5 * nu_a * delta_t * delta_t * sin(yaw);
 		v_p = v_p + nu_a * delta_t;
 
-		yaw_p = yaw_p + 0.5*nu_yawdd*delta_t*delta_t;
+		yaw_p = yaw_p + 0.5*nu_yawdd * delta_t * delta_t;
 		yawd_p = yawd_p + nu_yawdd * delta_t;
 
 		//write predicted sigma point into right column
@@ -352,8 +351,16 @@ void UKF::PredictRadarMeasurement(VectorXd* z_out, MatrixXd* S_out, MatrixXd* Zs
 
 		// measurement model
 		Zsig(0, i) = sqrt(p_x * p_x + p_y * p_y); //r
-		Zsig(1, i) = atan2(p_y, p_x); //phi
-		Zsig(2, i) = (p_x * v1 + p_y * v2) / Zsig(0, i); //r_dot
+		const double EPS = 0.0001;
+		if (fabs(Zsig(0, i)) > EPS)
+		{
+			Zsig(1, i) = atan2(p_y, p_x); //phi
+		}
+		else
+		{
+			Zsig(1, i) = 0;
+		}
+		Zsig(2, i) = (p_x * v1 + p_y * v2) / std::max(Zsig(0, i), EPS); //r_dot
 	}
 
 	//mean predicted measurement
