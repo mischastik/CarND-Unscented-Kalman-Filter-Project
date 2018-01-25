@@ -64,13 +64,12 @@ public:
   ///* Augmented state dimension
   int n_aug_;
 
-  //VectorXd x_aug_;
-
-  //VectorXd P_aug_;
-
+  ///* Radar noise cov matrix
   MatrixXd R_radar_;
 
+  ///* Lidar noise cov matrix
   MatrixXd R_lidar_;
+
   ///* Sigma point spreading parameter
   double lambda_;
 
