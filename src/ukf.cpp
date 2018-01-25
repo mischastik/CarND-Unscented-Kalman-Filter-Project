@@ -1,6 +1,7 @@
 #include "ukf.h"
 #include "Eigen/Dense"
 #include <iostream>
+#include <list>
 
 using namespace std;
 using Eigen::MatrixXd;
@@ -11,7 +12,8 @@ using std::vector;
  * Initializes Unscented Kalman filter
  * This is scaffolding, do not modify
  */
-UKF::UKF() {
+UKF::UKF() 
+{
   // if this is false, laser measurements will be ignored (except during init)
   use_laser_ = true;
 
@@ -25,10 +27,10 @@ UKF::UKF() {
   P_ = MatrixXd::Identity(5, 5);
 
   // Process noise standard deviation longitudinal acceleration in m/s^2
-  std_a_ = 0.25;
+  std_a_ = 0.55;
 
   // Process noise standard deviation yaw acceleration in rad/s^2
-  std_yawdd_ = 0.25;
+  std_yawdd_ = 0.55;
   
   //DO NOT MODIFY measurement noise values below these are provided by the sensor manufacturer.
   // Laser measurement noise standard deviation position1 in m
@@ -174,6 +176,15 @@ void UKF::UpdateLidar(MeasurementPackage meas_package)
 	PredictLidarMeasurement(&z_pred, &S, &Zsig);
 	double epsilon = 0.0;
 	UpdateStateLidar(Zsig, S, z_pred, meas_package.raw_measurements_, epsilon);
+	if (epsilon > this->lidarNIS5percentBoundary)
+	{
+		nisLidarValuesAboveThreshold++;
+	}
+	nisLidarValuesComputed++;
+	if (nisLidarValuesComputed % 100 == 0)
+	{
+		cout << "NIS LIDAR above boundary rate (5% target): " << 100.0 * double(nisLidarValuesAboveThreshold) / nisLidarValuesComputed << " \%" << endl;
+	}
 
 }
 
@@ -196,6 +207,15 @@ void UKF::UpdateRadar(MeasurementPackage meas_package)
 	PredictRadarMeasurement(&z_pred, &S, &Zsig);
 	double epsilon = 0.0;
 	UpdateStateRadar(Zsig, S, z_pred, meas_package.raw_measurements_, epsilon);
+	if (epsilon > this->radarNIS5percentBoundary)
+	{
+		nisRadarValuesAboveThreshold++;
+	}
+	nisRadarValuesComputed++;
+	if (nisRadarValuesComputed % 100 == 0)
+	{
+		cout << "NIS RADAR above boundary rate (5 % target): " << 100.0 * double(nisLidarValuesAboveThreshold) / nisLidarValuesComputed << " \%" << endl;
+	}
 }
 
 void UKF::AugmentedSigmaPoints(MatrixXd* Xsig_out)
