@@ -47,6 +47,7 @@ private:
 	///* Lidar noise cov matrix
 	MatrixXd R_lidar_;
 
+	MatrixXd H_lidar_;
 	///* Sigma point spreading parameter
 	double lambda_;
 
@@ -119,17 +120,12 @@ private:
 	*/
 	void UpdateRadar(MeasurementPackage meas_package);
 
-	void AugmentedSigmaPoints(MatrixXd* Xsig_out);
+	MatrixXd AugmentedSigmaPoints();
 	void SigmaPointPrediction(MatrixXd Xsig_aug, double delta_t);
 	void PredictMeanAndCovariance();
 
 	void PredictRadarMeasurement(VectorXd* z_out, MatrixXd* S_out, MatrixXd* Zsig_out);
 	void UpdateStateRadar(MatrixXd Zsig, MatrixXd S, VectorXd z_pred, VectorXd z, double& epsilon);
-
-	void PredictLidarMeasurement(VectorXd* z_out, MatrixXd* S_out, MatrixXd* Zsig_out);
-	void UpdateStateLidar(MatrixXd Zsig, MatrixXd S, VectorXd z_pred, VectorXd z, double& epsilon);
-
-	
 };
 
 #endif /* UKF_H */
